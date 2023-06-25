@@ -17,6 +17,7 @@ public class UiCore extends JPanel {
     private final World world;
     private final Player player;
     private final RenderingHints renderingHints;
+    private final Font defaultFont = new Font("Arial", Font.BOLD, 30);
 
     /**
      * Constructs a new UiCore instance with the specified world and player.
@@ -77,9 +78,9 @@ public class UiCore extends JPanel {
                 graphics2D,
                 getWidth(),
                 getHeight(),
-                25,
-                5,
-                25,
+                player.getController().getPosition().getFirst(),
+                player.getController().getPosition().getSecond(),
+                player.getController().getPosition().getThird(),
                 player.getController().getCamera().getRotationX(),
                 player.getController().getCamera().getRotationY()
         );
@@ -114,7 +115,9 @@ public class UiCore extends JPanel {
             throw new RuntimeException(exception);
         }
 
-        System.out.println("Rendered: " + ((System.nanoTime() - renderTime) / 1_000_000) + "ms");
+        graphics.setColor(Color.BLACK);
+        graphics2D.setFont(defaultFont);
+        graphics2D.drawString("FPS: " + (1000 / ((System.nanoTime() - renderTime) / 1_000_000)), 100, 100);
 
         renderTime = 0;
     }

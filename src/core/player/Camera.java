@@ -8,7 +8,8 @@ import java.awt.event.MouseMotionListener;
 
 public class Camera implements MouseMotionListener {
 
-    private double rotationX = -45;
+    private Robot robot;
+    private double rotationX = 90;
     private double rotationY = 90;
 
     @Override
@@ -29,11 +30,11 @@ public class Camera implements MouseMotionListener {
         double moveY = (mouseEvent.getY() - centerY) / 10d;
 
         rotationX += moveX;
-        rotationY -= moveY;
+        //rotationY -= moveY;
 
-        if (rotationY < 20){
+        if (rotationY < 20) {
             rotationY = 20;
-        } else if (rotationY > 140){
+        } else if (rotationY > 140) {
             rotationY = 140;
         }
 
@@ -41,14 +42,8 @@ public class Camera implements MouseMotionListener {
     }
 
     private void centerMouse(int centerX, int centerY) {
-        Robot robot;
-        try {
-            robot = new Robot();
-        } catch (AWTException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        robot.mouseMove(centerX, centerY);
+        while (MouseInfo.getPointerInfo().getLocation().y != centerY)
+            robot.mouseMove(centerX, centerY);
     }
 
     public double getRotationX() {
@@ -57,5 +52,13 @@ public class Camera implements MouseMotionListener {
 
     public double getRotationY() {
         return rotationY;
+    }
+
+    {
+        try {
+            robot = new Robot();
+        } catch (AWTException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

@@ -11,6 +11,18 @@ public class Tuple<T, K, V> {
         this.third = third;
     }
 
+    public void setFirst(T first) {
+        this.first = first;
+    }
+
+    public void setSecond(K second) {
+        this.second = second;
+    }
+
+    public void setThird(V third) {
+        this.third = third;
+    }
+
     public T getFirst() {
         return first;
     }

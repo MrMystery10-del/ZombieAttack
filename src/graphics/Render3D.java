@@ -35,7 +35,7 @@ public class Render3D {
 
         try {
             int i = 0;
-            for (double x = rotationX - UiConstants.FOV; x < rotationX + UiConstants.FOV; x += UiConstants.FOV / UiConstants.raysX * 2) {
+            for (double x = rotationX - UiConstants.FOV / 2; x < rotationX + UiConstants.FOV / 2; x += UiConstants.FOV / UiConstants.raysX) {
                 double finalX = x;
                 int finalI = i;
 
@@ -53,7 +53,8 @@ public class Render3D {
 
     private void renderCol(Graphics2D resultImageGraphics, double x, int i) {
         int j = 0;
-        for (double y = rotationY + (UiConstants.FOV / 2); y > rotationY - (UiConstants.FOV / 2); y -= (UiConstants.FOV / 2) / UiConstants.raysY * 2) {
+        double yFOV = UiConstants.FOV / (16 / 9);
+        for (double y = rotationY + yFOV / 2; y > rotationY - yFOV / 2; y -= yFOV / UiConstants.raysY) {
             double degreeX = Math.toRadians(x);
             double degreeY = Math.toRadians(y);
             double dirX = Math.cos(degreeX) * Math.sin(degreeY);
@@ -71,8 +72,6 @@ public class Render3D {
         int rayValue = 0x00000000;
         double travel = 0;
 
-        boolean[][][] takenCubes = new boolean[cubes.length][cubes[0].length][cubes[0][0].length];
-
         while (isInBorder(cubes, (int) rayX, (int) rayY, (int) rayZ) && (rayValue >> 24 & 0xFF) < 0xFF) {
             int cubeX = (int) rayX;
             int cubeY = (int) rayY;
@@ -83,11 +82,7 @@ public class Render3D {
             rayZ += dirZ;
 
             travel += 1.8;
-            if (takenCubes[cubeX][cubeY][cubeZ]) {
-                continue;
-            }
 
-            takenCubes[cubeX][cubeY][cubeZ] = true;
             int cube = cubes[cubeX][cubeY][cubeZ];
 
             int amount = cube >> 24 & 0xFF;
