@@ -30,7 +30,7 @@ public class UiCore extends JPanel {
         this.player = player;
         this.renderingHints = createRenderingHints();
         setupInputMapping();
-        frame = new Frame(UiConstants.title, this);
+        frame = new Frame(UiValues.title, this);
         frame.setInvisibleCursor();
     }
 

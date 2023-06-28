@@ -26,7 +26,7 @@ public class Camera implements MouseMotionListener {
         int centerX = UiCore.getFrame().getX() + UiCore.getFrame().getWidth() / 2;
         int centerY = UiCore.getFrame().getY() + UiCore.getFrame().getHeight() / 2;
 
-        double moveX = (mouseEvent.getX() - centerX) / 10d;
+        double moveX = (mouseEvent.getX() - centerX) / 30d;
         double moveY = (mouseEvent.getY() - centerY) / 10d;
 
         rotationX += moveX;
@@ -42,7 +42,6 @@ public class Camera implements MouseMotionListener {
     }
 
     private void centerMouse(int centerX, int centerY) {
-        while (MouseInfo.getPointerInfo().getLocation().y != centerY)
             robot.mouseMove(centerX, centerY);
     }
 

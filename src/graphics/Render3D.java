@@ -1,5 +1,7 @@
 package graphics;
 
+import core.World;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
@@ -30,12 +32,12 @@ public class Render3D {
     public void render() throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
 
-        BufferedImage resultImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage resultImage = new BufferedImage(width, height, BufferedImage.TYPE_USHORT_555_RGB);
         Graphics2D resultImageGraphics = resultImage.createGraphics();
 
         try {
             int i = 0;
-            for (double x = rotationX - UiConstants.FOV / 2; x < rotationX + UiConstants.FOV / 2; x += UiConstants.FOV / UiConstants.raysX) {
+            for (double x = rotationX - UiValues.getFOV() / 2; x < rotationX +  UiValues.getFOV() / 2; x +=  UiValues.getFOV() / UiValues.getRaysX()) {
                 double finalX = x;
                 int finalI = i;
 
@@ -53,8 +55,8 @@ public class Render3D {
 
     private void renderCol(Graphics2D resultImageGraphics, double x, int i) {
         int j = 0;
-        double yFOV = UiConstants.FOV / (16 / 9);
-        for (double y = rotationY + yFOV / 2; y > rotationY - yFOV / 2; y -= yFOV / UiConstants.raysY) {
+        double yFOV = UiValues.getFOV() / (16 / 9);
+        for (double y = rotationY + yFOV / 2; y > rotationY - yFOV / 2; y -= yFOV / UiValues.getRaysY()) {
             double degreeX = Math.toRadians(x);
             double degreeY = Math.toRadians(y);
             double dirX = Math.cos(degreeX) * Math.sin(degreeY);
@@ -63,7 +65,7 @@ public class Render3D {
             Color color = rayCast(cubes, cameraX, cameraY, cameraZ, dirX, dirY, dirZ);
 
             resultImageGraphics.setColor(color);
-            resultImageGraphics.fillRect(i * (width / UiConstants.raysX), j * (height / UiConstants.raysY), width / UiConstants.raysX, height / UiConstants.raysY);
+            resultImageGraphics.fillRect((int) (i * (width / (UiValues.getRaysX() * 1.0))), (int) (j * (height / (UiValues.getRaysY() * 1.0))), (int) (width / (UiValues.getRaysX() * 1.0)), (int) (height / (UiValues.getRaysY() * 1.0)));
             j++;
         }
     }
@@ -72,7 +74,7 @@ public class Render3D {
         int rayValue = 0x00000000;
         double travel = 0;
 
-        while (isInBorder(cubes, (int) rayX, (int) rayY, (int) rayZ) && (rayValue >> 24 & 0xFF) < 0xFF) {
+        while (World.isInBorder(rayX, rayY, rayZ) && (rayValue >> 24 & 0xFF) < 0xFF) {
             int cubeX = (int) rayX;
             int cubeY = (int) rayY;
             int cubeZ = (int) rayZ;
@@ -81,7 +83,7 @@ public class Render3D {
             rayY += dirY;
             rayZ += dirZ;
 
-            travel += 1.8;
+            travel += 2.8;
 
             int cube = cubes[cubeX][cubeY][cubeZ];
 
@@ -105,10 +107,6 @@ public class Render3D {
         int b = (int) Math.max(0, (rayValue & 0xFF) - travel);
 
         return new Color(r, g, b);
-    }
-
-    private static boolean isInBorder(int[][][] cubes, int x, int y, int z) {
-        return x >= 0 && x < cubes.length && y >= 0 && y < cubes[0].length && z >= 0 && z < cubes[0][0].length;
     }
 
     private static int mixColor(int main, int addition, float amount) {

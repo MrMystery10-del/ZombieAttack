@@ -1,7 +1,7 @@
 package core.player;
 
 import core.Tuple;
-import graphics.UiConstants;
+import core.World;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,8 +18,8 @@ public class Controller {
             double newX = position.getFirst() + Math.cos(rX);
             double newZ = position.getThird() + -Math.sin(rX);
 
-            position.setFirst(newX > 1 && newX < UiConstants.X_AXE ? newX : position.getFirst());
-            position.setThird(newZ > 1 && newZ < UiConstants.Z_AXE ? newZ : position.getThird());
+            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
+            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
         }
     };
 

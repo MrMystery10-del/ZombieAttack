@@ -1,14 +1,16 @@
 package core;
 
-import graphics.UiConstants;
-
-import java.awt.*;
 import java.util.ArrayList;
 
 /**
  * The World class represents the game world consisting of cubes and zombies.
  */
 public class World {
+
+    public final static int X_AXE = 100;
+    public final static int Y_AXE = 30;
+    public final static int Z_AXE = 100;
+
     private final ArrayList<Zombie> zombies;
     private final int[][][] dimension;
 
@@ -17,7 +19,7 @@ public class World {
      */
     public World() {
         zombies = new ArrayList<>();
-        dimension = new int[UiConstants.X_AXE][UiConstants.Y_AXE][UiConstants.Z_AXE];
+        dimension = new int[X_AXE][Y_AXE][Z_AXE];
 
         initializeDimension();
         initializeBorders();
@@ -27,9 +29,9 @@ public class World {
      * Initializes the dimension array with empty cubes.
      */
     private void initializeDimension() {
-        for (int x = 0; x < UiConstants.X_AXE; x++) {
-            for (int y = 0; y < UiConstants.Y_AXE; y++) {
-                for (int z = 0; z < UiConstants.Z_AXE; z++) {
+        for (int x = 0; x < X_AXE; x++) {
+            for (int y = 0; y < Y_AXE; y++) {
+                for (int z = 0; z < Z_AXE; z++) {
                     dimension[x][y][z] = 0;
                 }
             }
@@ -40,22 +42,22 @@ public class World {
      * Initializes the border cubes in the dimension array.
      */
     private void initializeBorders() {
-        for (int x = 0; x < UiConstants.X_AXE; x++) {
-            for (int z = 0; z < UiConstants.Z_AXE; z++) {
+        for (int x = 0; x < X_AXE; x++) {
+            for (int z = 0; z < Z_AXE; z++) {
                 dimension[x][0][z] = 0xFF825123;
                 dimension[x][29][z] = 0xFFFFFFFF;
             }
         }
 
-        for (int x = 0; x < UiConstants.X_AXE; x++) {
-            for (int y = 0; y < UiConstants.Y_AXE; y++) {
+        for (int x = 0; x < X_AXE; x++) {
+            for (int y = 0; y < Y_AXE; y++) {
                 dimension[x][y][0] = 0xFFFF0000;
                 dimension[x][y][99] = 0xFFFF00FF;
             }
         }
 
-        for (int z = 0; z < UiConstants.Z_AXE; z++) {
-            for (int y = 0; y < UiConstants.Y_AXE; y++) {
+        for (int z = 0; z < Z_AXE; z++) {
+            for (int y = 0; y < Y_AXE; y++) {
                 dimension[0][y][z] = 0xFF0000FF;
                 dimension[99][y][z] = 0xFF00FF00;
             }
@@ -76,6 +78,10 @@ public class World {
      */
     public void addZombie(Zombie zombie) {
         zombies.add(zombie);
+    }
+
+    public static boolean isInBorder(double x, double y, double z) {
+        return x >= 0 && x < X_AXE && y >= 0 && y < Y_AXE && z >= 0 && z < Z_AXE;
     }
 
     /**

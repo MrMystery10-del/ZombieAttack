@@ -4,7 +4,7 @@ import javax.swing.*;
 
 import java.awt.*;
 
-import static graphics.UiConstants.dimension;
+import static graphics.UiValues.dimension;
 
 /**
  * The Frame class represents a custom JFrame for the game window.
