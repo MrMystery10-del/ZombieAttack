@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 
 public class Controller {
 
+    private final World world;
     private final Camera camera = new Camera();
     private final Tuple<Double, Double, Double> position = new Tuple<>(50d, 10d, 50d);
     private final Action goForward = new AbstractAction() {
@@ -18,8 +19,10 @@ public class Controller {
             double newX = position.getFirst() + Math.cos(Math.toRadians(rX));
             double newZ = position.getThird() + -Math.sin(Math.toRadians(rX));
 
-            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
-            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
+            if (!world.playerCollidesBorder((int) newX, (int) position.getSecond().doubleValue(), (int) newX)) {
+                position.setFirst(newX);
+                position.setThird(newZ);
+            }
         }
     };
 
@@ -31,8 +34,10 @@ public class Controller {
             double newX = position.getFirst() + -Math.cos(Math.toRadians(rX));
             double newZ = position.getThird() + Math.sin(Math.toRadians(rX));
 
-            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
-            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
+            if (!world.playerCollidesBorder((int) newX, (int) position.getSecond().doubleValue(), (int) newX)) {
+                position.setFirst(newX);
+                position.setThird(newZ);
+            }
         }
     };
 
@@ -44,8 +49,10 @@ public class Controller {
             double newX = position.getFirst() + Math.sin(Math.toRadians(rX));
             double newZ = position.getThird() + Math.cos(Math.toRadians(rX));
 
-            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
-            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
+            if (!world.playerCollidesBorder((int) newX, (int) position.getSecond().doubleValue(), (int) newX)) {
+                position.setFirst(newX);
+                position.setThird(newZ);
+            }
         }
     };
 
@@ -57,8 +64,10 @@ public class Controller {
             double newX = position.getFirst() - Math.sin(Math.toRadians(rX));
             double newZ = position.getThird() - Math.cos(Math.toRadians(rX));
 
-            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
-            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
+            if (!world.playerCollidesBorder((int) newX, (int) position.getSecond().doubleValue(), (int) newX)) {
+                position.setFirst(newX);
+                position.setThird(newZ);
+            }
         }
     };
 
@@ -76,6 +85,10 @@ public class Controller {
             new Tuple<>(KeyStroke.getKeyStroke("D"), "goRight", goRight),
             new Tuple<>(KeyStroke.getKeyStroke("SPACE"), "shoot", shoot)
     };
+
+    public Controller(World world) {
+        this.world = world;
+    }
 
     public Tuple<Double, Double, Double> getPosition() {
         return position;

@@ -27,6 +27,7 @@ public class Room {
     public Mesh createMash(int sizeX, int sizeY, int sizeZ) {
         int[] mesh = new int[sizeX * sizeY * sizeZ];
 
+        System.out.println(sizeX + " " + sizeY + " " + sizeZ);
         // Floor and ceiling
         for (int x = 0; x < sizeX; x++) {
             for (int z = 0; z < sizeZ; z++) {

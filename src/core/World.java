@@ -63,6 +63,14 @@ public class World {
         }
     }
 
+    public boolean playerCollidesBorder(int x, int y, int z) {
+        if (dimension[x * X_AXE * Y_AXE + y * Z_AXE + z] != 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Adds a zombie to the world.
      *
