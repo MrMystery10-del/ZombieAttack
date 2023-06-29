@@ -12,12 +12,11 @@ import static graphics.UiValues.dimension;
 public class Frame extends JFrame {
 
     /**
-     * Constructs a Frame object with the specified title and panel.
+     * Constructs a Frame object with the specified title.
      *
      * @param title The title of the frame.
-     * @param panel The panel to set as the content pane of the frame.
      */
-    public Frame(String title, JPanel panel){
+    public Frame(String title){
         setTitle(title);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -25,8 +24,6 @@ public class Frame extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         setLocationRelativeTo(null);
-
-        setContentPane(panel);
     }
 
     public void setInvisibleCursor(){

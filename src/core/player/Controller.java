@@ -15,8 +15,8 @@ public class Controller {
         public void actionPerformed(ActionEvent event) {
             double rX = camera.getRotationX();
 
-            double newX = position.getFirst() + Math.cos(rX);
-            double newZ = position.getThird() + -Math.sin(rX);
+            double newX = position.getFirst() + Math.cos(Math.toRadians(rX));
+            double newZ = position.getThird() + -Math.sin(Math.toRadians(rX));
 
             position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
             position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
@@ -26,21 +26,39 @@ public class Controller {
     private final Action goBack = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent event) {
+            double rX = camera.getRotationX();
 
+            double newX = position.getFirst() + -Math.cos(Math.toRadians(rX));
+            double newZ = position.getThird() + Math.sin(Math.toRadians(rX));
+
+            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
+            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
         }
     };
 
     private final Action goLeft = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent event) {
+            double rX = camera.getRotationX();
 
+            double newX = position.getFirst() + Math.sin(Math.toRadians(rX));
+            double newZ = position.getThird() + Math.cos(Math.toRadians(rX));
+
+            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
+            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
         }
     };
 
     private final Action goRight = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent event) {
+            double rX = camera.getRotationX();
 
+            double newX = position.getFirst() - Math.sin(Math.toRadians(rX));
+            double newZ = position.getThird() - Math.cos(Math.toRadians(rX));
+
+            position.setFirst(newX > 1 && newX < World.X_AXE ? newX : position.getFirst());
+            position.setThird(newZ > 1 && newZ < World.Z_AXE ? newZ : position.getThird());
         }
     };
 

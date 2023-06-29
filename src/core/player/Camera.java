@@ -23,8 +23,8 @@ public class Camera implements MouseMotionListener {
     }
 
     private void rotate(MouseEvent mouseEvent) {
-        int centerX = UiCore.getFrame().getX() + UiCore.getFrame().getWidth() / 2;
-        int centerY = UiCore.getFrame().getY() + UiCore.getFrame().getHeight() / 2;
+        int centerX = UiCore.frame.getX() + UiCore.frame.getWidth() / 2;
+        int centerY = UiCore.frame.getY() + UiCore.frame.getHeight() / 2;
 
         double moveX = (mouseEvent.getX() - centerX) / 30d;
         double moveY = (mouseEvent.getY() - centerY) / 10d;

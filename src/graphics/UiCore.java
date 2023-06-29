@@ -6,18 +6,25 @@ import core.World;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 /**
  * The UI core class responsible for rendering the game window and handling user input.
  */
 public class UiCore extends JPanel {
-    private static long renderTime = 0;
-    private static Frame frame;
+
+    public final static Frame frame;
 
     private final World world;
     private final Player player;
     private final RenderingHints renderingHints;
+    private final ComponentListener resizeListener;
+
+    private final Render3D render = new Render3D();
     private final Font defaultFont = new Font("Arial", Font.BOLD, 30);
+
+    private long renderTime = 0;
 
     /**
      * Constructs a new UiCore instance with the specified world and player.
@@ -29,9 +36,11 @@ public class UiCore extends JPanel {
         this.world = world;
         this.player = player;
         this.renderingHints = createRenderingHints();
+        this.addComponentListener(resizeListener);
+
         setupInputMapping();
-        frame = new Frame(UiValues.title, this);
-        frame.setInvisibleCursor();
+
+        frame.setContentPane(this);
     }
 
     /**
@@ -67,22 +76,29 @@ public class UiCore extends JPanel {
     }
 
     /**
-     * Creates a Render3D object for rendering the game world.
+     * Updates the data which is getting parsed to the render every tick
      *
      * @param graphics2D The graphics context used for rendering.
-     * @return The Render3D object.
      */
-    private Render3D createRender3D(Graphics2D graphics2D) {
-        return new Render3D(
-                world.getDimension(),
+    private void updateTickData(Graphics2D graphics2D) {
+        render.parseTickData(
                 graphics2D,
-                getWidth(),
-                getHeight(),
                 player.getController().getPosition().getFirst(),
                 player.getController().getPosition().getSecond(),
                 player.getController().getPosition().getThird(),
                 player.getController().getCamera().getRotationX(),
                 player.getController().getCamera().getRotationY()
+        );
+    }
+
+    /**
+     * Updates the data which is getting parsed to the render once a world or screen size update occurred
+     */
+    public void updateWorldData() {
+        render.parseWorldData(
+                world.getDimension(),
+                getWidth(),
+                getHeight()
         );
     }
 
@@ -105,24 +121,64 @@ public class UiCore extends JPanel {
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setRenderingHints(renderingHints);
 
-        Render3D render3D = createRender3D(graphics2D);
+        updateTickData(graphics2D);
 
         renderTime = System.nanoTime();
 
         try {
-            render3D.render();
+            render.renderFrame();
         } catch (InterruptedException exception) {
             throw new RuntimeException(exception);
         }
 
-        graphics.setColor(Color.BLACK);
+        drawMap(graphics2D);
+
+        graphics.setColor(Color.WHITE);
         graphics2D.setFont(defaultFont);
-        graphics2D.drawString("FPS: " + (1000 / ((System.nanoTime() - renderTime) / 1_000_000)), 100, 100);
+
+        try {
+            graphics2D.drawString("FPS: " + (1000 / ((System.nanoTime() - renderTime) / 1_000_000)), 100, 100);
+        } catch (ArithmeticException exception) {
+
+        }
 
         renderTime = 0;
     }
 
-    public static Frame getFrame() {
-        return frame;
+    private void drawMap(Graphics2D graphics2D) {
+        graphics2D.setColor(Color.GRAY);
+        graphics2D.drawRect(getWidth() - 250, 50, 200, 200);
+
+        graphics2D.setColor(Color.RED);
+        graphics2D.drawRect((int) (getWidth() - 250 + (player.getController().getPosition().getFirst() * 2)), (int) (50 + (player.getController().getPosition().getThird() * 2)), 3, 3);
+    }
+
+    static {
+        frame = new Frame(UiValues.title);
+        frame.setInvisibleCursor();
+    }
+
+    {
+        resizeListener = new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent event) {
+                updateWorldData();
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent event) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent event) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent event) {
+
+            }
+        };
     }
 }

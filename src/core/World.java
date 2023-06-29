@@ -1,5 +1,7 @@
 package core;
 
+import objects.Mesh;
+
 import java.util.ArrayList;
 
 /**
@@ -12,17 +14,22 @@ public class World {
     public final static int Z_AXE = 100;
 
     private final ArrayList<Zombie> zombies;
-    private final int[][][] dimension;
+    private final int[] dimension;
 
     /**
      * Constructs a new World object and initializes the dimension array and zombies list.
      */
     public World() {
         zombies = new ArrayList<>();
-        dimension = new int[X_AXE][Y_AXE][Z_AXE];
+        dimension = new int[X_AXE * Y_AXE * Z_AXE];
 
         initializeDimension();
-        initializeBorders();
+
+        for (int x = 20; x < 28; x++) {
+            for (int y = 0; y < 20; y++) {
+                dimension[x * X_AXE * Y_AXE + y * Z_AXE + 30] = 0xFF2DA65F;
+            }
+        }
     }
 
     /**
@@ -32,43 +39,28 @@ public class World {
         for (int x = 0; x < X_AXE; x++) {
             for (int y = 0; y < Y_AXE; y++) {
                 for (int z = 0; z < Z_AXE; z++) {
-                    dimension[x][y][z] = 0;
+                    dimension[x * X_AXE * Y_AXE + y * Z_AXE + z] = 0;
                 }
             }
         }
     }
 
-    /**
-     * Initializes the border cubes in the dimension array.
-     */
-    private void initializeBorders() {
-        for (int x = 0; x < X_AXE; x++) {
-            for (int z = 0; z < Z_AXE; z++) {
-                dimension[x][0][z] = 0xFF825123;
-                dimension[x][29][z] = 0xFFFFFFFF;
+    public void addNewObject(Mesh mesh, int posX, int posY, int posZ) {
+
+        for (int x = posX; x < mesh.sizeX() + posX; x++) {
+            for (int y = posY; y < mesh.sizeY() + posY; y++) {
+                for (int z = posZ; z < mesh.sizeZ() + posZ; z++) {
+
+                    if (x < X_AXE && y < Y_AXE && z < Z_AXE) {
+                        int i = x - posX;
+                        int j = y - posY;
+                        int k = z - posZ;
+
+                        dimension[x * X_AXE * Y_AXE + y * Z_AXE + z] = mesh.mesh()[i * mesh.sizeX() * mesh.sizeY() + j * mesh.sizeZ() + k];
+                    }
+                }
             }
         }
-
-        for (int x = 0; x < X_AXE; x++) {
-            for (int y = 0; y < Y_AXE; y++) {
-                dimension[x][y][0] = 0xFFFF0000;
-                dimension[x][y][99] = 0xFFFF00FF;
-            }
-        }
-
-        for (int z = 0; z < Z_AXE; z++) {
-            for (int y = 0; y < Y_AXE; y++) {
-                dimension[0][y][z] = 0xFF0000FF;
-                dimension[99][y][z] = 0xFF00FF00;
-            }
-        }
-    }
-
-    /**
-     * Updates the game world.
-     */
-    public void updateWorld() {
-        // Update logic goes here
     }
 
     /**
@@ -78,10 +70,6 @@ public class World {
      */
     public void addZombie(Zombie zombie) {
         zombies.add(zombie);
-    }
-
-    public static boolean isInBorder(double x, double y, double z) {
-        return x >= 0 && x < X_AXE && y >= 0 && y < Y_AXE && z >= 0 && z < Z_AXE;
     }
 
     /**
@@ -98,7 +86,7 @@ public class World {
      *
      * @return The dimension array.
      */
-    public int[][][] getDimension() {
+    public int[] getDimension() {
         return dimension;
     }
 }
